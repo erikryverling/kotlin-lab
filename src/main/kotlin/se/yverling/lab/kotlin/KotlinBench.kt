@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalContracts::class)
+@file:OptIn(ExperimentalContracts::class, ExperimentalContracts::class)
 
 package se.yverling.lab.kotlin
 
@@ -33,6 +33,7 @@ internal object KotlinBench {
         `immutable collections`()
         `minOf() and minBy()`()
         `guard for property`()
+        `null-safe call`()
         `nullable as`()
         `value class`()
     }
@@ -253,6 +254,11 @@ internal object KotlinBench {
         val property = null
 
         val otherProperty = property ?: return
+    }
+
+    fun `null-safe call`() {
+        val person: Person? = null
+        println("Person.name = ${person?.name}")
     }
 
     fun `nullable as`() {
