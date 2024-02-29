@@ -7,35 +7,19 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+import kotlin.reflect.KVisibility
 
 typealias StringIntMap = Map<String, Int>
 
 internal object KotlinBench {
     fun all() {
-        with()
-        `apply and also`()
-        let()
-        run()
-        producer()
-        `type projections`()
-        `generic function`()
-        `generic extension method`()
-        `type alias`()
-        `operator overload`()
-        deconstructing()
-        infix()
-        `tail recursion`()
-        `reified and infix`()
-        contracts()
-        `class delegation`()
-        `property delegation`()
-        `list copy`()
-        `immutable collections`()
-        `minOf() and minBy()`()
-        `guard for property`()
-        `null-safe call`()
-        `nullable as`()
-        `value class`()
+        KotlinBench::class.members.forEach {
+            if (it.name !in listOf("all", "hashCode", "toString", "equals") && it.visibility == KVisibility.PUBLIC) {
+                println("--- ${it.name} ---")
+                it.call(KotlinBench)
+                println()
+            }
+        }
     }
 
     fun with() {
@@ -278,6 +262,15 @@ internal object KotlinBench {
         }
     }
 
+    fun `throw if null`() {
+        val nullableCar: Car? = null
+        try {
+            nullableCar?.doors ?: throw IllegalStateException("Cat can't be null!")
+        } catch (e: IllegalStateException) {
+            println("Caught exception: ${e.message}")
+        }
+    }
+
     // Scoped functions
     class Person(var name: String, var age: Int) {
         fun capitalizedName(): String {
@@ -293,7 +286,7 @@ internal object KotlinBench {
         data object NotANumber : Expr()
     }
 
-    fun eval(expr: Expr): Double = when (expr) {
+    private fun eval(expr: Expr): Double = when (expr) {
         is Expr.Const -> expr.number
         is Expr.Sum -> eval(expr.e1) + eval(expr.e2)
         Expr.NotANumber -> Double.NaN

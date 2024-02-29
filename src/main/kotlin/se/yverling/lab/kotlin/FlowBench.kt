@@ -32,28 +32,18 @@ import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlin.reflect.KVisibility
 
 @OptIn(ExperimentalCoroutinesApi::class)
 object FlowBench {
     fun all() {
-        `Stream values using a flow`()
-        `Canceling a flow (using withTimeOut())`()
-        `Transforming a flow with operators`()
-        `Size limiting a flow`()
-        `Terminal operators`()
-        `Emit values on background thread`()
-        `Combining flows`()
-        `Chaining and flattening flows`()
-        `Exceptions in a flow`()
-        `Run flow, but do not collect`()
-        `Updating flow`()
-        `Debouncing a flow`()
-        `Collect only a single value and get out of the coroutine`()
-        `Collect from a flow until a certain condition has been met using transformWhile()`()
-        `Using hot flow with SharedFlow`()
-        `Using hot flow with StateFlow`()
-        `WIP StateFlow on different threads`()
-        `Converting a callback interface to a flow`()
+        FlowBench::class.members.forEach {
+            if (it.name !in listOf("all", "hashCode", "toString", "equals") && it.visibility == KVisibility.PUBLIC) {
+                println("--- ${it.name} ---")
+                it.call(FlowBench)
+                println()
+            }
+        }
     }
 
     fun `Stream values using a flow`() = runBlocking {

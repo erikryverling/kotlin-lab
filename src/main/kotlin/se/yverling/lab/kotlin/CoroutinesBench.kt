@@ -18,6 +18,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.resumeWithException
+import kotlin.reflect.KVisibility
 import kotlin.system.measureTimeMillis
 
 
@@ -33,21 +34,13 @@ import kotlin.system.measureTimeMillis
  */
 object CoroutinesBench {
     fun all() {
-        `Launch a simple coroutine`()
-        `Launch a simple coroutine using an a job and wait()`()
-        `Launch two coroutines in a new scope`()
-        `Launch coroutine as a job`()
-        `Launch a huge amount of coroutines`()
-        `Canceling a coroutine`()
-        `Coroutine with timeout`()
-        `Running suspended functions sequentially`()
-        `Running suspended functions concurrently with async() & await()`()
-        `Structured concurrency with async`()
-        `Coroutine dispatchers`()
-        `Simple Channel example`()
-        `Using the producer-consumer pattern with Channel`()
-        `Nested coroutines`()
-        suspendCancellableCoroutine()
+        CoroutinesBench::class.members.forEach {
+            if (it.name !in listOf("all", "hashCode", "toString", "equals") && it.visibility == KVisibility.PUBLIC) {
+                println("--- ${it.name} ---")
+                it.call(CoroutinesBench)
+                println()
+            }
+        }
     }
 
     /**
