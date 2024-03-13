@@ -1,4 +1,4 @@
-package se.yverling.lab.kotlin
+package se.yverling.lab.kotlin.flow
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

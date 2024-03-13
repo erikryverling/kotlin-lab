@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalContracts::class, ExperimentalContracts::class, ExperimentalContracts::class)
 
-package se.yverling.lab.kotlin
+package se.yverling.lab.kotlin.kotlin
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -277,6 +277,35 @@ internal object KotlinBench {
             nullableCar?.doors ?: fail("Cat can't be null!")
         } catch (e: IllegalStateException) {
             println("Caught exception: ${e.message}")
+        }
+    }
+
+    fun `builders`() {
+        val html = html {
+            head {
+                title { +"HTML builder example" }
+            }
+            body {
+                h1 { +"Builders" }
+                p { +"They are great" }
+            }
+        }
+        println(html)
+
+        val s = "String"
+
+        // Type is ItemHolder<String>
+        itemHolderBuilder {
+            addItem(s)
+        }
+        // Type is ItemHolder<String>
+        itemHolderBuilder {
+            addAllItems(listOf(s))
+        }
+        // Type is ItemHolder<String?>
+        itemHolderBuilder {
+            val lastItem: String? = getLastItem()
+            println(lastItem)
         }
     }
 

@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withContext
 import org.junit.Test
+import se.yverling.lab.kotlin.coroutines.printDelayed
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutinesTest {
