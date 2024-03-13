@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalContracts::class, ExperimentalContracts::class)
+@file:OptIn(ExperimentalContracts::class, ExperimentalContracts::class, ExperimentalContracts::class)
 
 package se.yverling.lab.kotlin
 
@@ -364,7 +364,12 @@ data class Student(
 
 // Misc
 
-data class Car(val doors: Int)
+// Classes are final by default. To make them extendable add the 'open' modifier
+open class Vehicle(
+    val name: String
+)
+
+data class Car(val doors: Int) : Vehicle(name = "Car")
 
 @JvmInline
 value class Cat(private val name: String) {
