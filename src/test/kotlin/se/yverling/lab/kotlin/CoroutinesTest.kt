@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -26,7 +27,7 @@ import se.yverling.lab.kotlin.coroutines.printDelayed
 class CoroutinesTest {
 
     @Test
-    fun `Launch a simple coroutine`() {
+    fun `launch a simple coroutine`() {
         /*
         All coroutines much be executed in a CoroutineScope.
         A scope is the main holder for coroutines and contains
@@ -51,8 +52,11 @@ class CoroutinesTest {
             launch {
                 println("Coroutine: In launch()")
 
-                // The execution will suspend at this point and return to the main execution path
-                printDelayed()
+                // We're using a new context to prevent the delay() to be skipped by runTest()
+                launch(Dispatchers.Default) {
+                    // The execution will suspend at this point and return to the main execution path
+                    printDelayed()
+                }
             }
 
             /*
@@ -67,7 +71,7 @@ class CoroutinesTest {
     }
 
     @Test
-    fun `Launch a simple coroutine using an UnconfinedTestDispatcher`() {
+    fun `launch a simple coroutine using an UnconfinedTestDispatcher`() {
         /*
         Instead of calling advanceUntilIdle() we could use UnconfinedTestDispatcher instead of StandardTestDispatcher.
         This dispatcher will start the launched coroutines eagerly. This means that they’ll start running immediately,
@@ -87,14 +91,16 @@ class CoroutinesTest {
                  * UnconfinedTestDispatcher starts new coroutines eagerly, but that doesn’t mean that it’ll run them to
                  * completion eagerly as well. If a launched coroutine suspends, other coroutines will resume executing.
                  */
-                printDelayed()
+                launch(Dispatchers.Default) {
+                    printDelayed()
+                }
             }
             println("Main: Done")
         }
     }
 
     @Test
-    fun `Injecting a Dispatcher and using async() await()`() = runTest {
+    fun `injecting a Dispatcher and using async() await()`() = runTest {
         val testDispatcher = StandardTestDispatcher(testScheduler)
 
         /*
@@ -116,7 +122,7 @@ class CoroutinesTest {
     }
 
     @Test
-    fun `Use a custom scope to simulate a lifecycle using the main thread`() = runTest {
+    fun `use a custom scope to simulate a lifecycle using the main thread`() = runTest {
         val testDispatcher = StandardTestDispatcher()
 
         // As Lifecycle operates on the Main thread using MainScope, we need to override it with StandardTestDispatcher
@@ -135,6 +141,42 @@ class CoroutinesTest {
         } finally {
             Dispatchers.resetMain()
         }
+    }
+
+    @Test
+    fun `advanceTimeBy()`() = runTest {
+        launchDelays()
+
+        // advanceTimeBy(2_000) will progress through the first two delays
+        advanceTimeBy(2000)
+
+        println("Time advanced 2000 ms")
+
+        // virtual time is 2_000, next resume is at 2_001
+
+        // progress through the last delay of 501 (note 500ms were already advanced)
+        advanceTimeBy(2)
+
+        println("Time advanced 2002 ms")
+    }
+}
+
+fun CoroutineScope.launchDelays() {
+    launch {
+        // advanceTimeBy(2_000) will progress through this delay (resume @ virtual time 1_000)
+        delay(1_000)
+
+        println("Delayed 1000 ms")
+
+        // advanceTimeBy(2_000) will progress through this delay (resume @ virtual time 1_500)
+        delay(500)
+
+        println("Delayed 1500 ms")
+
+        // advanceTimeBy(2_000) will not progress through this delay (resume @ virtual time 2_001)
+        delay(501)
+
+        println("Delayed 2001 ms")
     }
 }
 
