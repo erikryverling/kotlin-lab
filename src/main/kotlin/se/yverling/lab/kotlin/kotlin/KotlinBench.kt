@@ -14,7 +14,15 @@ typealias StringIntMap = Map<String, Int>
 internal object KotlinBench {
     fun all() {
         KotlinBench::class.members.forEach {
-            if (it.name !in listOf("all", "hashCode", "toString", "equals") && it.visibility == KVisibility.PUBLIC) {
+            if (it.name !in listOf(
+                    "all",
+                    "hashCode",
+                    "toString",
+                    "equals",
+                    "component1",
+                    "component2",
+                ) && it.visibility == KVisibility.PUBLIC
+            ) {
                 println("--- ${it.name} ---")
                 it.call(KotlinBench)
                 println()
@@ -309,6 +317,13 @@ internal object KotlinBench {
         }
     }
 
+    fun `destructing declarations`() {
+        val person = PersonData(name = "Ian", surname = "Smith", age = 86)
+        // Note! surname is ignored
+        val (name, _, age) = person
+        print("Name: $name, age: $age")
+    }
+
     /*
      * The throw expression has the type Nothing.
      * This type has no values and is used to mark code locations that can never be reached.
@@ -323,6 +338,10 @@ internal object KotlinBench {
             return name.capitalize()
         }
     }
+
+    operator fun Person.component1() = name
+    operator fun Person.component2() = age
+
 
     // Sealed class
 
