@@ -271,6 +271,23 @@ internal object KotlinBench {
         }
     }
 
+    fun `nothing`() {
+        val nullableCar: Car? = null
+        try {
+            nullableCar?.doors ?: fail("Cat can't be null!")
+        } catch (e: IllegalStateException) {
+            println("Caught exception: ${e.message}")
+        }
+    }
+
+    /*
+     * The throw expression has the type Nothing.
+     * This type has no values and is used to mark code locations that can never be reached.
+     */
+    private fun fail(message: String): Nothing {
+        throw IllegalStateException(message)
+    }
+
     // Scoped functions
     class Person(var name: String, var age: Int) {
         fun capitalizedName(): String {
