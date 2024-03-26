@@ -81,20 +81,40 @@ internal object KotlinBench {
         println(producer.get())
     }
 
+    interface Producer<out T> {
+        fun get(): T
+        // fun add(t: T) will cause compile error as T is declared as Out-bound
+    }
+
     fun `type projections`() {
         val ints: Array<Int> = arrayOf(1, 2, 3)
         val any = Array<Any>(3) { "" }
         copy(ints, any)
     }
 
+    private fun copy(from: Array<out Any>, to: Array<Any>) {
+        for (i in from.indices)
+            to[i] = from[i]
+        // from[i] = to[i] wil cause compile error as from is a Out-projected type
+    }
+
+
     fun `generic function`() {
         println(singletonList("A")[0])
         println(singletonList(1)[0])
     }
 
+    private fun <T> singletonList(item: T): List<T> {
+        return listOf(item)
+    }
+
     fun `generic extension method`() {
         println(1.hash())
         println("A".hash())
+    }
+
+    private fun <T> T.hash(): Int? {
+        return this?.hashCode()
     }
 
     fun `type alias`() {
@@ -134,10 +154,22 @@ internal object KotlinBench {
         println(("cow" zip "car"))
     }
 
+    private infix fun String.zip(other: String): String {
+        return "${this[0]}${other[0]}${this[1]}${other[1]}${this[2]}${other[2]}"
+    }
+
     fun `tail recursion`() {
         countDown(10)
         println()
     }
+
+    // This will make the Kotlin compiler generate an optimized loop version
+    private tailrec fun countDown(n: Int) {
+        if (n == 0) return
+        print("$n ")
+        countDown(n - 1)
+    }
+
 
     fun `reified and infix`() {
         data class Car(val doors: Int)
@@ -145,6 +177,8 @@ internal object KotlinBench {
         val string = membersOf<Car>().joinToString(", ")
         println(string)
     }
+
+    private inline fun <reified T> membersOf() = T::class.members.map { it.name }
 
     fun contracts() {
         val nullableString: String? = null
@@ -154,12 +188,38 @@ internal object KotlinBench {
         }
     }
 
+    private fun notNullOrEmpty(nullableString: String?): Boolean {
+        contract {
+            returns(true) implies (nullableString != null)
+        }
+
+        return nullableString != null && nullableString != ""
+    }
+
     fun `class delegation`() {
-        val baseData = PersonData("John", "Doe", 34)
+        val baseData = ProfileData("John", "Doe", 34)
         val student = Student(baseData, "KTH")
 
         println(student.name)
     }
+
+    interface Profile {
+        val name: String
+        val surname: String
+        val age: Int
+    }
+
+    data class ProfileData(
+        override val name: String,
+        override val surname: String,
+        override val age: Int
+    ) : Profile
+
+    data class Student(
+        val data: ProfileData,
+        val university: String
+    ) : Profile by data
+
 
     fun `property delegation`() {
         val greetingAsLazy: Lazy<String> = lazy { "Hello" }
@@ -241,6 +301,13 @@ internal object KotlinBench {
         println(cars.minByOrNull { it.doors })
     }
 
+    // Classes are final by default. To make them extendable add the 'open' modifier
+    open class Vehicle(
+        val name: String
+    )
+
+    data class Car(val doors: Int) : Vehicle(name = "Car")
+
     @Suppress("UNREACHABLE_CODE")
     fun `guard for property`() {
         val property = null
@@ -288,6 +355,14 @@ internal object KotlinBench {
         }
     }
 
+    /*
+     * The throw expression has the type Nothing.
+     * This type has no values and is used to mark code locations that can never be reached.
+     */
+    private fun fail(message: String): Nothing {
+        throw IllegalStateException(message)
+    }
+
     fun `builders`() {
         val html = html {
             head {
@@ -318,34 +393,121 @@ internal object KotlinBench {
     }
 
     fun `destructing declarations`() {
-        val person = PersonData(name = "Ian", surname = "Smith", age = 86)
-        // Note! surname is ignored
-        val (name, _, age) = person
-        print("Name: $name, age: $age")
+        val person = Person(name = "Ian", age = 86)
+        // Note! age is ignored
+        val (name, _) = person
+        print("Name: $name")
     }
 
-    /*
-     * The throw expression has the type Nothing.
-     * This type has no values and is used to mark code locations that can never be reached.
-     */
-    private fun fail(message: String): Nothing {
-        throw IllegalStateException(message)
+    fun `smart cast in Kotlin 2`() {
+        petAnimal(Cat("Meowth"))
+
+        signalCheck(object : Postponed {
+            override fun signal() {
+                println("Postponed")
+            }
+        })
+
+        runProcessor(object : Processor {
+            override fun process() {
+                println("Processing")
+            }
+
+        })
+
+        Holder {
+            println("Holding on")
+        }.process()
     }
 
-    // Scoped functions
-    class Person(var name: String, var age: Int) {
-        fun capitalizedName(): String {
-            return name.capitalize()
+
+    private interface Status {
+        fun signal()
+    }
+
+    private interface Ok : Status
+    private interface Postponed : Status
+    private interface Declined : Status
+
+
+    private fun petAnimal(animal: Any) {
+        val isCat = animal is Cat
+        if (isCat) {
+            // In Kotlin 2.0.0-Beta5, the compiler can access
+            // information about isCat, so it knows that
+            // animal was smart cast to type Cat.
+            // Therefore, the purr() function is successfully called.
+            // In Kotlin 1.9.20, the compiler doesn't know
+            // about the smart cast, so calling the purr()
+            // function triggers an error.
+            animal.purr()
         }
     }
 
-    operator fun Person.component1() = name
-    operator fun Person.component2() = age
+    private fun signalCheck(signalStatus: Any) {
+        if (signalStatus is Postponed || signalStatus is Declined) {
+            // signalStatus is smart cast to a common supertype Status
+            signalStatus.signal()
+            // Prior to Kotlin 2.0.0-Beta5, signalStatus is smart cast
+            // to type Any, so calling the signal() function triggered an
+            // Unresolved reference error. The signal() function can only
+            // be called successfully after another type check:
 
+            // check(signalStatus is Status)
+            // signalStatus.signal()
+        }
+    }
 
-    // Sealed class
+    private interface Processor {
+        fun process()
+    }
 
-    sealed class Expr {
+    private inline fun inlineAction(f: () -> Unit) = f()
+
+    private fun nextProcessor(): Processor? = null
+
+    private fun runProcessor(processor: Processor?): Processor? {
+        var processor: Processor? = processor
+        inlineAction {
+            // In Kotlin 2.0.0-Beta5, the compiler knows that processor
+            // is a local variable, and inlineAction() is an inline function, so
+            // references to processor can't be leaked. Therefore, it's safe
+            // to smart cast processor.
+
+            // If processor isn't null, processor is smart cast
+            if (processor != null) {
+                // The compiler knows that processor isn't null, so no safe call
+                // is needed
+                processor.process()
+
+                // In Kotlin 1.9.20, you have to perform a safe call:
+                // processor?.process()
+            }
+
+            processor = nextProcessor()
+        }
+
+        return processor
+    }
+
+    private class Holder(val provider: (() -> Unit)?) {
+        fun process() {
+            // In Kotlin 2.0.0-Beta5, if provider isn't null, then
+            // provider is smart cast
+            if (provider != null) {
+                // The compiler knows that provider isn't null
+                provider()
+
+                // In 1.9.20, the compiler doesn't know that provider isn't
+                // null, so it triggers an error:
+                // Reference has a nullable type '(() -> Unit)?', use explicit '?.invoke()' to make a function-like call instead
+            }
+        }
+    }
+
+    // -- Sealed class --
+
+    private sealed class Expr {
         data class Const(val number: Double) : Expr()
         data class Sum(val e1: Expr, val e2: Expr) : Expr()
         data object NotANumber : Expr()
@@ -357,88 +519,25 @@ internal object KotlinBench {
         Expr.NotANumber -> Double.NaN
     }
 
-    // Generics
+    // -- Common --
 
-    interface Producer<out T> {
-        fun get(): T
-        // fun add(t: T) will cause compile error as T is declared as Out-bound
+    class Person(var name: String, var age: Int) {
+        fun capitalizedName(): String {
+            return name.capitalize()
+        }
     }
 
-    private fun copy(from: Array<out Any>, to: Array<Any>) {
-        for (i in from.indices)
-            to[i] = from[i]
-        // from[i] = to[i] wil cause compile error as from is a Out-projected type
-    }
+    operator fun Person.component1() = name
+    operator fun Person.component2() = age
 
-    private fun <T> singletonList(item: T): List<T> {
-        return listOf(item)
-    }
+    @JvmInline
+    value class Cat(private val name: String) {
+        init {
+            require(name.matches(Regex("[A-Za-z]+"))) { "Cat name only contain letter" }
+        }
 
-    private fun <T> T.hash(): Int? {
-        return this?.hashCode()
-    }
-
-    // Infix
-
-    private infix fun String.zip(other: String): String {
-        return "${this[0]}${other[0]}${this[1]}${other[1]}${this[2]}${other[2]}"
-    }
-
-    // Tail recursion
-
-    // This will make the Kotlin compiler generate an optimized loop version
-    private tailrec fun countDown(n: Int) {
-        if (n == 0) return
-        print("$n ")
-        countDown(n - 1)
-    }
-
-    // Inline and reified
-    private inline fun <reified T> membersOf() = T::class.members.map { it.name }
-}
-
-// Contracts
-
-fun notNullOrEmpty(nullableString: String?): Boolean {
-    contract {
-        returns(true) implies (nullableString != null)
-    }
-
-    return nullableString != null && nullableString != ""
-}
-
-// Class delegates
-
-interface Person {
-    val name: String
-    val surname: String
-    val age: Int
-}
-
-data class PersonData(
-    override val name: String,
-    override val surname: String,
-    override val age: Int
-) : Person
-
-data class Student(
-    val data: PersonData,
-    val university: String
-) : Person by data
-
-
-// Misc
-
-// Classes are final by default. To make them extendable add the 'open' modifier
-open class Vehicle(
-    val name: String
-)
-
-data class Car(val doors: Int) : Vehicle(name = "Car")
-
-@JvmInline
-value class Cat(private val name: String) {
-    init {
-        require(name.matches(Regex("[A-Za-z]+"))) { "Cat name only contain letter" }
+        fun purr() {
+            println("Purr purr")
+        }
     }
 }

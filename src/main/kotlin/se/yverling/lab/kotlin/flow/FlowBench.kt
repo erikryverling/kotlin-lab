@@ -66,6 +66,15 @@ object FlowBench {
         list.collect { println(it) }
     }
 
+    // Note that this is not a suspendable method
+    private fun flowOfNumbers(): Flow<Int> = flow {
+        println("Flow started")
+        repeat(10) {
+            delay(500)
+            // Values in a flow are emitted using emit()
+            emit(it)
+        }
+    }
 
     fun `Canceling a flow (using withTimeOut())`() = runBlocking {
         try {
@@ -79,6 +88,12 @@ object FlowBench {
         } catch (e: TimeoutCancellationException) {
             println("Got timeout")
         }
+    }
+
+    // The "suspend" modifier is used when a function contains a suspending call, such as delay
+    private suspend fun printDelayed(delayInMillis: Long = 1000, id: Int = 1) {
+        delay(delayInMillis)
+        println("Coroutine #$id has delayed $delayInMillis ms")
     }
 
     fun `Transforming a flow with operators`() = runBlocking {
@@ -254,6 +269,13 @@ object FlowBench {
         }
     }
 
+    private fun flowWithParam(modifier: Int): Flow<Int> = flow {
+        println("Flow started")
+        repeat(10) {
+            emit(it * modifier)
+        }
+    }
+
     fun `Debouncing a flow`() = runBlocking {
         val flow = flow {
             emit(1)
@@ -421,23 +443,6 @@ object FlowBench {
             }
     }
 
-    // Note that this is not a suspendable method
-    private fun flowOfNumbers(): Flow<Int> = flow {
-        println("Flow started")
-        repeat(10) {
-            delay(500)
-            // Values in a flow are emitted using emit()
-            emit(it)
-        }
-    }
-
-    private fun flowWithParam(modifier: Int): Flow<Int> = flow {
-        println("Flow started")
-        repeat(10) {
-            emit(it * modifier)
-        }
-    }
-
     private interface Listener {
         fun onSuccess(data: Int)
     }
@@ -456,11 +461,5 @@ object FlowBench {
         fun unregisterAll() {
             listen = false
         }
-    }
-
-    // The "suspend" modifier is used when a function contains a suspending call, such as delay
-    private suspend fun printDelayed(delayInMillis: Long = 1000, id: Int = 1) {
-        delay(delayInMillis)
-        println("Coroutine #$id has delayed $delayInMillis ms")
     }
 }

@@ -216,6 +216,27 @@ fun `Structured concurrency with async`() = runBlocking {
     println("Completed in $time ms")
 }
 
+/*
+This method uses structured concurrency using coroutineScope(), which means that if an
+exception occurs in it all launched coroutines will be guaranteed to be canceled
+ */
+private suspend fun calculateSumOfOneAndTwo(): Int = coroutineScope {
+    val partOne = async { calculatePartOne() }
+    val partTwo = async { calculatePartTwo() }
+
+    partOne.await() + partTwo.await()
+}
+
+private suspend fun calculatePartOne(): Int {
+    delay(1000)
+    return 47
+}
+
+private suspend fun calculatePartTwo(): Int {
+    delay(1000)
+    return 11
+}
+
 fun `Coroutine dispatchers`() = runBlocking {
     /*
     If no dispatcher is defined the coroutine will use the parent context and dispatcher
@@ -279,6 +300,16 @@ fun `Using the producer-consumer pattern with Channel`() = runBlocking {
     println("Done!")
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
+private fun CoroutineScope.squareNumbers(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
+    produce {
+        for (i in numbers) send(i * i)
+    }
+
+private fun CoroutineScope.produceNumbers(): ReceiveChannel<Int> = produce {
+    for (i in 1..5) send(i)
+}
+
 fun `Nested coroutines`() = runBlocking {
     coroutineScope {
         launch {// Coroutine #3
@@ -328,12 +359,6 @@ fun suspendCancellableCoroutine() = runBlocking {
     println(greeting)
 }
 
-// The "suspend" modifier is used when a function contains a suspending call, such as delay
-internal suspend fun printDelayed(delayInMillis: Long = 1000, id: Int = 1) {
-    delay(delayInMillis)
-    println("Coroutine #$id has delayed $delayInMillis ms")
-}
-
 private interface Listener {
     fun onSuccess(message: String)
     fun onError(message: String)
@@ -346,33 +371,10 @@ private object Producer {
     }
 }
 
-/*
-This method uses structured concurrency using coroutineScope(), which means that if an
-exception occurs in it all launched coroutines will be guaranteed to be canceled
- */
-private suspend fun calculateSumOfOneAndTwo(): Int = coroutineScope {
-    val partOne = async { calculatePartOne() }
-    val partTwo = async { calculatePartTwo() }
+// --- Common ---
 
-    partOne.await() + partTwo.await()
+// The "suspend" modifier is used when a function contains a suspending call, such as delay
+internal suspend fun printDelayed(delayInMillis: Long = 1000, id: Int = 1) {
+    delay(delayInMillis)
+    println("Coroutine #$id has delayed $delayInMillis ms")
 }
-
-private suspend fun calculatePartOne(): Int {
-    delay(1000)
-    return 47
-}
-
-private suspend fun calculatePartTwo(): Int {
-    delay(1000)
-    return 11
-}
-
-private fun CoroutineScope.produceNumbers(): ReceiveChannel<Int> = produce {
-    for (i in 1..5) send(i)
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
-private fun CoroutineScope.squareNumbers(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
-    produce {
-        for (i in numbers) send(i * i)
-    }
