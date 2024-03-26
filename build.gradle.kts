@@ -8,10 +8,6 @@ repositories {
     mavenCentral()
 }
 
-application {
-    mainClass.set("se.yverling.lab.kotlin.MainKt")
-}
-
 dependencies {
     implementation(platform(libs.kotlin.bom))
     implementation(libs.kotlin.stdlib)
@@ -24,10 +20,16 @@ dependencies {
     testImplementation(libs.test.kotest.assertions)
 }
 
-tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-    rejectVersionIf {
-        isNonStable(candidate.version)
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            languageVersion = "2.0"
+        }
     }
+}
+
+application {
+    mainClass.set("se.yverling.lab.kotlin.MainKt")
 }
 
 fun isNonStable(version: String): Boolean {
