@@ -83,7 +83,9 @@ internal object KotlinBench {
 
     interface Producer<out T> {
         fun get(): T
-        // fun add(t: T) will cause compile error as T is declared as Out-bound
+        // fun add(t: T) will cause compile error as T is declared as Out-bound.
+        // This declaration means that Producer will only output T, never take it as an input.
+        // The corresponding declaration or inputs would be <in T>.
     }
 
     fun `type projections`() {

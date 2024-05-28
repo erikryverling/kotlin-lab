@@ -1,18 +1,18 @@
 [versions]
 
 # Global
-kotlin = "2.0.0-RC1"
+kotlin = "2.0.0"
 
 # Plugins
 versions = "0.51.0"
 
 # Libraries
-kotlinx-coroutines-core = "1.8.0"
+kotlinx-coroutines-core = "1.8.1"
 kotlinx-immutableCollections = "0.3.7"
 
 junit = "4.13.2"
-kotest-assertions = "5.8.0"
-coroutinesTest = "1.7.3"
+kotest-assertions = "5.9.0"
+coroutinesTest = "1.8.1"
 
 
 [plugins]
