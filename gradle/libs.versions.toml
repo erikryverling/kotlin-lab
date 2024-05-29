@@ -4,7 +4,7 @@
 kotlin = "2.0.0"
 
 # Plugins
-versions = "0.51.0"
+versions-plugin = "0.51.0"
 
 # Libraries
 kotlinx-coroutines-core = "1.8.1"
@@ -17,11 +17,10 @@ coroutinesTest = "1.8.1"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
 
 
 [libraries]
-kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
