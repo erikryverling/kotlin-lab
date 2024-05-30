@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.immutableCollections)
+    implementation(libs.kotlinx.datetime)
 
     testImplementation(libs.test.junit)
     testImplementation(libs.test.coroutines)

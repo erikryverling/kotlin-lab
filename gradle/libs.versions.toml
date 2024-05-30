@@ -9,6 +9,7 @@ versions-plugin = "0.51.0"
 # Libraries
 kotlinx-coroutines-core = "1.8.1"
 kotlinx-immutableCollections = "0.3.7"
+kotlinx-datetime = "0.6.0"
 
 junit = "4.13.2"
 kotest-assertions = "5.9.0"
@@ -25,6 +26,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutableCollections" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 test-junit = { module = " junit:junit", version.ref = "junit" }
 test-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-assertions" }

@@ -5,6 +5,12 @@ package se.yverling.lab.kotlin.kotlin
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KVisibility
@@ -422,6 +428,33 @@ internal object KotlinBench {
         }.process()
     }
 
+    // https://stackoverflow.com/questions/32437550/whats-the-difference-between-instant-and-localdatetime
+    fun `time and date objects`() {
+        println("LocalTime: ${LocalTime(hour = 12, minute = 30, second = 30)}")
+
+        println(
+            "LocalDateTime: ${
+                LocalDateTime(
+                    LocalDate(year = 2024, monthNumber = 12, dayOfMonth = 20),
+                    LocalTime(hour = 12, minute = 30, second = 30),
+                )
+            }"
+        )
+
+        println("Now as Instant: ${Clock.System.now()}")
+
+        println(
+            "Now as LocalDateTime with local timezone: ${
+                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
+            }"
+        )
+
+        println(
+            "Now as LocalDateTime with London timezone: ${
+                Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Stockholm")).time
+            }"
+        )
+    }
 
     private interface Status {
         fun signal()
