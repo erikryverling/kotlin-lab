@@ -450,6 +450,7 @@ internal object KotlinBench {
         )
 
         println(
+            // Note that this will also take daylight saving time in consideration
             "Now as LocalDateTime with Stockholm timezone: ${
                 Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Stockholm")).time
             }"
