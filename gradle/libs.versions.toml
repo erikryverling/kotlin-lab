@@ -1,19 +1,19 @@
 [versions]
 
 # Global
-kotlin = "2.0.0"
+kotlin = "2.1.0"
 
 # Plugins
 versions-plugin = "0.51.0"
 
 # Libraries
-kotlinx-coroutines-core = "1.8.1"
-kotlinx-immutableCollections = "0.3.7"
-kotlinx-datetime = "0.6.0"
+kotlinx-coroutines-core = "1.9.0"
+kotlinx-immutableCollections = "0.3.8"
+kotlinx-datetime = "0.6.1"
 
 junit = "4.13.2"
-kotest-assertions = "5.9.0"
-coroutinesTest = "1.8.1"
+kotest-assertions = "5.9.1"
+coroutinesTest = "1.9.0"
 
 
 [plugins]
@@ -22,8 +22,8 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugi
 
 
 [libraries]
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutableCollections" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
