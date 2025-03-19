@@ -220,12 +220,12 @@ internal object KotlinBench {
     data class ProfileData(
         override val name: String,
         override val surname: String,
-        override val age: Int
+        override val age: Int,
     ) : Profile
 
     data class Student(
         val data: ProfileData,
-        val university: String
+        val university: String,
     ) : Profile by data
 
 
@@ -311,7 +311,7 @@ internal object KotlinBench {
 
     // Classes are final by default. To make them extendable add the 'open' modifier
     open class Vehicle(
-        val name: String
+        val name: String,
     )
 
     data class Car(val doors: Int) : Vehicle(name = "Car")
@@ -455,6 +455,15 @@ internal object KotlinBench {
                 Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Stockholm")).time
             }"
         )
+    }
+
+    fun `spread`() {
+        val list = arrayOf("1", "2", "3")
+        printAll(*list)
+    }
+
+    private fun printAll(vararg messages: String) {
+        messages.forEach(::println)
     }
 
     private interface Status {
