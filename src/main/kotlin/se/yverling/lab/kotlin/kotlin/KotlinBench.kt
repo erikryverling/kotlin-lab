@@ -11,6 +11,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.Result
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KVisibility
@@ -457,9 +458,17 @@ internal object KotlinBench {
         )
     }
 
-    fun `spread`() {
+    fun spread() {
         val list = arrayOf("1", "2", "3")
         printAll(*list)
+    }
+
+    fun fold() {
+        val result = Result.success("Success")
+        result.fold(
+            onSuccess = { println("Success: $it") },
+            onFailure = { println("Failure: $it") },
+        )
     }
 
     private fun printAll(vararg messages: String) {
