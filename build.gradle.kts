@@ -20,14 +20,6 @@ dependencies {
     testImplementation(libs.test.kotest.assertions)
 }
 
-kotlin {
-    sourceSets.all {
-        languageSettings {
-            languageVersion = "2.0"
-        }
-    }
-}
-
 application {
     mainClass.set("se.yverling.lab.kotlin.MainKt")
 }

@@ -1,4 +1,4 @@
-rootProject.name = "Kotlin Lab"
+rootProject.name = "kotlin-lab"
 
 pluginManagement {
     repositories {
