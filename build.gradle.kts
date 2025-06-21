@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.powerAssert)
     alias(libs.plugins.versions)
+    alias(libs.plugins.ktlint)
 }
 
 repositories {
@@ -41,4 +42,8 @@ fun isNonStable(version: String): Boolean {
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()
+}
+
+ktlint {
+    ignoreFailures = true
 }
