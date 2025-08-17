@@ -15,6 +15,7 @@ import kotlin.Result
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KVisibility
+import kotlin.takeIf
 
 typealias StringIntMap = Map<String, Int>
 
@@ -206,10 +207,19 @@ internal object KotlinBench {
     }
 
     fun `class delegation`() {
-        val baseData = ProfileData("John", "Doe", 34)
+        val baseData = ProfileData(name = "John", surname = "Doe", age = 34)
         val student = Student(baseData, "KTH")
 
         println(student.name)
+    }
+
+    fun `take if or unless`() {
+        val john = Person(name = "John", age = 14)
+
+        val adult = john.takeIf { john.age > 18 }
+        val jane = Person(name = "Jane", age = 38).takeUnless { john == null }
+
+        println("Adult: $adult. Jane: $jane")
     }
 
     interface Profile {
