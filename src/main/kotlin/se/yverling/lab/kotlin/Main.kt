@@ -9,4 +9,3 @@ fun main() {
     CoroutinesBench.all()
     FlowBench.all()
 }
-

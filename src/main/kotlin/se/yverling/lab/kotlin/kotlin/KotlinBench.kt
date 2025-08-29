@@ -1,21 +1,26 @@
-@file:OptIn(ExperimentalContracts::class, ExperimentalContracts::class, ExperimentalContracts::class)
+@file:OptIn(
+    ExperimentalContracts::class,
+    ExperimentalContracts::class,
+    ExperimentalContracts::class
+)
 
 package se.yverling.lab.kotlin.kotlin
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.Result
+import se.yverling.lab.kotlin.kotlin.KotlinBench.component1
+import se.yverling.lab.kotlin.kotlin.KotlinBench.component2
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KVisibility
-import kotlin.takeIf
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 typealias StringIntMap = Map<String, Int>
 
@@ -440,6 +445,7 @@ internal object KotlinBench {
     }
 
     // https://stackoverflow.com/questions/32437550/whats-the-difference-between-instant-and-localdatetime
+    @OptIn(ExperimentalTime::class)
     fun `time and date objects`() {
         println("LocalTime: ${LocalTime(hour = 12, minute = 30, second = 30)}")
 
