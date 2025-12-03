@@ -4,7 +4,6 @@
 kotlin = "2.2.21"
 
 # Plugins
-versions-plugin = "0.53.0"
 ktlint-plugin = "14.0.1"
 
 # Libraries
@@ -19,7 +18,6 @@ coroutinesTest = "1.10.2"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
 kotlin-powerAssert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin"}
 ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint-plugin"}
 
