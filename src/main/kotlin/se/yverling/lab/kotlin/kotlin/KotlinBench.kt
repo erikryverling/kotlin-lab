@@ -487,6 +487,17 @@ internal object KotlinBench {
         )
     }
 
+    fun sortedBy() {
+        val persons = listOf(
+            Person("John", 7),
+            Person("Mary", 42),
+            Person("Peter", 38),
+        )
+
+        val personsSortedByDescendingAge = persons.sortedByDescending { it.age }
+        println(personsSortedByDescendingAge.joinToString(", ") { it.name })
+    }
+
     private fun printAll(vararg messages: String) {
         messages.forEach(::println)
     }
