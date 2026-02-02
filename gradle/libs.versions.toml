@@ -1,7 +1,7 @@
 [versions]
 
 # Common
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 
 # Plugins
 ktlint-plugin = "14.0.1"
@@ -12,7 +12,7 @@ kotlinx-immutableCollections = "0.4.0"
 kotlinx-datetime = "0.7.1"
 
 junit = "4.13.2"
-kotest-assertions = "6.0.5"
+kotest-assertions = "6.1.2"
 coroutinesTest = "1.10.2"
 
 
