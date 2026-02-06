@@ -9,4 +9,5 @@ description: Upgrades the project dependencies
 - Fix any compilation errors
 - Verify the changes by running ./gradlew test
 - Summerize all changes in libs.versions.toml and gradle-wrapper.properties and let me approve them
-
+- When approved create a commit for the changes named "Bump dependencies"
+- Push the changes
