@@ -11,3 +11,6 @@ local.properties
 # Intellij
 *.iml
 .idea/
+
+# Other
+.DS_Store
