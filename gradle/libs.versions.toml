@@ -28,6 +28,6 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutableCollections" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
-test-junit = { module = " junit:junit", version.ref = "junit" }
+test-junit = { module = "junit:junit", version.ref = "junit" }
 test-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-assertions" }
-test-coroutines = { module = " org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+test-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
