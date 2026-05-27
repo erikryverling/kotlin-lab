@@ -1,19 +1,20 @@
+# All dependencies were verified to be at their latest stable versions as of 2026-05-27
 [versions]
 
 # Common
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 
 # Plugins
 ktlint-plugin = "14.2.0"
 
 # Libraries
-kotlinx-coroutines-core = "1.10.2"
+kotlinx-coroutines-core = "1.11.0"
 kotlinx-immutableCollections = "0.4.0"
-kotlinx-datetime = "0.7.1"
+kotlinx-datetime = "0.8.0"
 
 junit = "4.13.2"
-kotest-assertions = "6.1.9"
-coroutinesTest = "1.10.2"
+kotest-assertions = "6.1.11"
+coroutinesTest = "1.11.0"
 
 
 [plugins]
