@@ -498,6 +498,18 @@ internal object KotlinBench {
         println(personsSortedByDescendingAge.joinToString(", ") { it.name })
     }
 
+    fun returnInAssignment() {
+        val name = if(true) {
+            return
+            "John"
+        } else {
+            "Jean"
+        }
+
+        // TODO name will never resolve and print() will never execute
+        print(name)
+    }
+
     private fun printAll(vararg messages: String) {
         messages.forEach(::println)
     }
